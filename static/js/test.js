@@ -7,7 +7,7 @@ function getCursorPosition(canvas, event, scale) {
 
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "green";
-    ctx.fillRect(Math.floor(x), Math.floor(y), 10, 10);
+    ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
 
 }
 
@@ -30,12 +30,13 @@ function zoom(event) {
   scale += event.deltaY * -0.01;
 
   // Restrict scale
-  scale = Math.min(Math.max(.125, scale), 4);
+  scale = Math.min(Math.max(.75, scale), 15);
 
   // Apply scale transform
   el.style.transform = `scale(${scale})`;
 }
 
-let scale = 1;
+let scale = 4;
 const el = document.getElementById("camera-wrap");
+el.style.transform = `scale(${scale})`;
 el.onwheel = zoom;
