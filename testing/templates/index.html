@@ -3,12 +3,14 @@
     <head>
         <meta charset="uf-8">
         <title> My Title </title>
+        {% load static %}
+    </head>
     <body>
-        <h1> Hello World! </h1>
-        <p> Bongo bognonog </p>
+        <p> test canvas </p>
         <div id="camera-wrap">
             <canvas id="canvas" width="500" height="500"></canvas>
         </div>
+        <script src="{% static 'js/test.js' %}"></script>
     </body>
 </html>
 
