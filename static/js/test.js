@@ -11,43 +11,69 @@ function drawPixel(canvas, event, scale) {
 
 }
 
+function panCanvas(canvas, offsetX, offsetY) {
+    let coords = canvas.getBoundingClientRect();
+    canvas.style.transform = `translate(${canvas.x + offsetX}px,
+    ${coords.y + offsetY}px)`
+}
+
 function clear(canvas) {
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, 500, 500);
 }
 
-// these variables help distinguish between actual clicks and drags
-var dragf = false, mouseDownTime=0, mouseUpTime;
-let canvas = document.getElementById('canvas');
-
-canvas.addEventListener('mousedown', function(e) {
-    mouseDownTime = e.timeStamp;
-
-});
-
-canvas.addEventListener('mouseup', function(e) {
-    mouseUpTime = e.timeStamp;
-    if (mouseUpTime - mouseDownTime < 300) {
-        drawPixel(canvas, e, scale);
-    }
-});
-
-clear(canvas);
-
-function zoom(event) {
+function zoom(event, el) {
   event.preventDefault();
-
-  scale += event.deltaY * -0.01;
+  scale += event.deltaY * -0.03;
 
   // Restrict scale
-  scale = Math.min(Math.max(2, scale), 20);
-
+  scale = Math.min(Math.max(2, scale), 50);
   // Apply scale transform
   el.style.transform = `scale(${scale})`;
 }
 
+// these variables help distinguish between actual clicks and drags
+var dragf = false, mouseDownTime=0, mouseUpTime, mouseIsDown=false;
+let canvas = document.getElementById("canvas");
+let positionData = canvas.getBoundingClientRect();
+let panX = 0, panY = 0, mouseDownX = 0, mouseDownY = 0;
+
+// allow us to set zoom and scale indepentently
+const cameraZoom = document.getElementById("camera-zoom");
+const cameraMove = document.getElementById("camera-move");
+
+canvas.addEventListener("mousedown", function(e) {
+    mouseIsDown = true;
+    console.log(`${e.offsetX}, ${e.offsetY}`);
+    console.log(`${e.clientX}, ${e.clientY}`);
+    mouseDownTime = e.timeStamp;
+});
+
+canvas.addEventListener("mouseup", function(e) {
+    mouseIsDown = false;
+    mouseUpTime = e.timeStamp;
+    if (mouseUpTime - mouseDownTime < 300 && !dragf) {
+        drawPixel(canvas, e, scale);
+    }
+    dragf = false;
+});
+
+
+canvas.addEventListener("mousemove", function(e) {
+    if (mouseIsDown) {
+        dragf = true;
+        panCanvas(canvas, e.offsetX, e.offsetY);
+    }
+});
+
+cameraZoom.addEventListener("wheel", function(e) {
+    zoom(e, cameraZoom);
+});
+
 let scale = 4;
-const el = document.getElementById("camera-wrap");
-el.style.transform = `scale(${scale})`;
-el.onwheel = zoom;
+cameraZoom.style.transform = `scale(${scale})`;
+
+clear(canvas);
+
+
