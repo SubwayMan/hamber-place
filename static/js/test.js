@@ -11,10 +11,9 @@ function drawPixel(canvas, event, scale) {
 
 }
 
-function panCanvas(canvas, offsetX, offsetY) {
-    let coords = canvas.getBoundingClientRect();
-    canvas.style.transform = `translate(${canvas.x + offsetX}px,
-    ${coords.y + offsetY}px)`
+function panCanvas(cv, xDist, yDist) {
+    canvas.style.transform = `translate(${xDist}px,
+    ${yDist}px)`
 }
 
 function clear(canvas) {
@@ -45,9 +44,9 @@ const cameraMove = document.getElementById("camera-move");
 
 canvas.addEventListener("mousedown", function(e) {
     mouseIsDown = true;
-    console.log(`${e.offsetX}, ${e.offsetY}`);
-    console.log(`${e.clientX}, ${e.clientY}`);
     mouseDownTime = e.timeStamp;
+    mouseDownX = e.offsetX;
+    mouseDownY = e.offsetY;
 });
 
 canvas.addEventListener("mouseup", function(e) {
@@ -60,10 +59,13 @@ canvas.addEventListener("mouseup", function(e) {
 });
 
 
-canvas.addEventListener("mousemove", function(e) {
+cameraMove.addEventListener("mousemove", function(e) {
     if (mouseIsDown) {
         dragf = true;
-        panCanvas(canvas, e.offsetX, e.offsetY);
+        panX += (e.offsetX - mouseDownX);
+        panY += (e.offsetY - mouseDownY);
+
+        panCanvas(cameraMove, panX, panY);
     }
 });
 
