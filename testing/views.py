@@ -1,13 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
-from .models import Canvas
+from .models import Canvas, Pixel
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db.models import F
 import json
 # Create your views here.
 def say_hello(request):
-    print(request)
     return HttpResponse("Hello World")
 
 @ensure_csrf_cookie
@@ -24,17 +23,19 @@ def ajax_get_canvas(request):
     data = {
         "board": "".join(field)
     }
-    print("".join(field)[:100])
     return JsonResponse(data, status=200)
 
 def ajax_update_canvas(request):
-    canvas = Canvas.objects.filter(title="testcanvas")[0]
     post_data = json.load(request)
-    if (canvas.data != ""):
-        canvas.data += ","
-    canvas.data = canvas.data + str(post_data["pixel"])
-    canvas.save()
-
+    canvas = Canvas.objects.filter(title="testcanvas")[0]
+    pixel = Pixel.objects.filter(position=post_data["pixel"])
+    if pixel:
+        pixel = pixel[0]
+        pixel.color = post_data["color"]
+    else:
+        pixel = Pixel(canvas=canvas, position=post_data["pixel"], color=post_data["color"])
+    
+    pixel.save()
     return JsonResponse({}, status=200)
 
     

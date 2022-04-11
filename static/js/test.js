@@ -26,16 +26,21 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+function updateColor(position, colorId) {
+    for (let i = 0; i<4; i++) {
+        boardState[position*4+i] = colors[colorId][i]
+    }
+}
+
 const csrftoken = getCookie("csrftoken");
 
-function drawPixel(x, y) {   
+function drawPixel(x, y, colorID) {   
 
 
     //console.log(parseInt(x) + " " + parseInt(y));
-    colorId = document.querySelector('input[name="color"]:checked').value
-    ctx.fillStyle = "green";
-    ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
-    
+    updateColor(y*250+x, colorID);
+    redrawCanvas();
 }
 
 function panCanvas(cv, xDist, yDist) {
@@ -96,9 +101,7 @@ function getBoard() {
 function updateBoard(data) {
     for (var i=0; i<data.length; i++) {
         id = parseInt(data[i]);
-        for (var j=0; j<4; j++) {
-            boardState[i*4 + j] = colors[id][j];
-        }
+        updateColor(i, id);
     }
     redrawCanvas();
 }
@@ -108,7 +111,7 @@ function redrawCanvas() {
     ctx.putImageData(dat, 0, 0);
 }
 
-function sendPixel(x, y) {
+function sendPixel(x, y, color) {
     let px = y*250 + x;
     fetch("ajax/update", {
         method: "post",
@@ -118,7 +121,7 @@ function sendPixel(x, y) {
             "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
             "X-CSRFToken": csrftoken,
         },
-        body: JSON.stringify({pixel: px}) //JavaScript object of data to POST
+        body: JSON.stringify({pixel: px, color: color}) //JavaScript object of data to POST
     })
     .then(response => {
           return response.json() //Convert response to JSON
@@ -156,8 +159,9 @@ canvas.addEventListener("mouseup", function(e) {
         const rect = canvas.getBoundingClientRect();
         let x = Math.floor((e.clientX - rect.left) / scale);
         let y = Math.floor((e.clientY - rect.top) / scale);
-        drawPixel(x, y);
-        sendPixel(x, y);
+        let colorId = document.querySelector('input[name="color"]:checked').value
+        drawPixel(x, y, colorId);
+        sendPixel(x, y, colorId);
     }
     dragging = false;
 });
