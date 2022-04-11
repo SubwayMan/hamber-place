@@ -138,6 +138,13 @@ websocket.onmessage = function(e) {
     console.log(data);
 }
 
+function sendWebsocketPixel(position, color) {
+    websocket.send(JSON.stringify({
+        "position": position,
+        "color": color
+    }));
+}
+
 // these variables help distinguish between actual clicks and drags
 var dragging=false, mouseDownTime=0, mouseUpTime, mouseIsDown=false;
 let canvas = document.getElementById("canvas");
