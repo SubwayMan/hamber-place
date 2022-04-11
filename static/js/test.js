@@ -21,11 +21,30 @@ function drawPixel(x, y) {
     //console.log(parseInt(x) + " " + parseInt(y));
     ctx.fillStyle = "green";
     ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
-
+    
 }
 
 function panCanvas(cv, xDist, yDist) {
     cv.style.transform = `translateX(${xDist}px) translateY(${yDist}px)`
+}
+
+function limitPanVariables() {
+    let centerX = window.innerWidth / 2;
+    let centerY = window.innerHeight / 2;
+    let positionData = canvas.getBoundingClientRect();
+
+    if (positionData.top > centerY) {
+        panY = positionData.height/2
+    }
+    if (positionData.bottom < centerY) {
+        panY = -positionData.height/2 + 10
+    }
+    if (positionData.left > centerX) {
+        panX = positionData.width/2
+    }
+    if (positionData.right < centerX) {
+        panX = -positionData.width/2 + 10
+    }
 }
 
 function clear(canvas) {
@@ -58,7 +77,6 @@ function getBoard() {
         board = data["board"];
         updateBoard(board);
     });
-
 }
 
 function updateBoard(data) {
@@ -124,10 +142,12 @@ cameraMove.addEventListener("mousemove", function(e) {
         dragging = true;
         panX += (e.offsetX - mouseDownX);
         panY += (e.offsetY - mouseDownY);
-
+        limitPanVariables()
         panCanvas(cameraMove, panX, panY);
+
     }
 });
+
 
 cameraZoom.addEventListener("wheel", function(e) {
     zoom(e, cameraZoom);
