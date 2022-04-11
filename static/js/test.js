@@ -38,7 +38,6 @@ const csrftoken = getCookie("csrftoken");
 function drawPixel(x, y, colorID) {   
 
 
-    //console.log(parseInt(x) + " " + parseInt(y));
     updateColor(y*250+x, colorID);
     redrawCanvas();
 }
@@ -135,10 +134,13 @@ const websocket = new WebSocket( 'ws://' + window.location.host + '/ws/canvas/')
 
 websocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
-    console.log(data);
+    updateColor(data.position, data.color)
+    redrawCanvas()
+
 }
 
-function sendWebsocketPixel(position, color) {
+function sendWebsocketPixel(x, y, color) {
+    let position = 250*y + x;
     websocket.send(JSON.stringify({
         "position": position,
         "color": color
@@ -168,6 +170,7 @@ canvas.addEventListener("mousedown", function(e) {
 });
 
 canvas.addEventListener("mouseup", function(e) {
+    e.preventDefault();
     mouseIsDown = false;
     mouseUpTime = e.timeStamp;
     if (mouseUpTime - mouseDownTime < 400 && !dragging) {
@@ -177,6 +180,7 @@ canvas.addEventListener("mouseup", function(e) {
         let colorId = document.querySelector('input[name="color"]:checked').value
         drawPixel(x, y, colorId);
         sendPixel(x, y, colorId);
+        sendWebsocketPixel(x, y, colorId);
     }
     dragging = false;
 });
