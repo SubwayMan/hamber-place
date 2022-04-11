@@ -20,7 +20,6 @@ def ajax_get_canvas(request):
     data = {
         "board": canvas.data
     }
-    print(canvas.data)
     return JsonResponse(data, status=200)
 
 def ajax_update_canvas(request):

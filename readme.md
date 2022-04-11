@@ -21,3 +21,9 @@ python3 manage.py runserver 0.0.0.0:8000
 ```
 Navigate to `127.0.0.1:8000/` to see the canvas.
 
+### Create an admin user
+Run the following:
+```bash
+python3 manage.py createsuperuser
+```
+Navigate to `127.0.0.1:8000/admin` to log in.
