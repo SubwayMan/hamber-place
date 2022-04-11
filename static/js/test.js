@@ -1,11 +1,6 @@
-function drawPixel(canvas, event, scale) {
-    const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / scale;
-    const y = (event.clientY - rect.top) / scale;
+function drawPixel(x, y) {
 
     //console.log(parseInt(x) + " " + parseInt(y));
-
-    const ctx = canvas.getContext("2d");
     ctx.fillStyle = "green";
     ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
 
@@ -31,7 +26,6 @@ function zoom(event, el) {
   el.style.transform = `scale(${scale})`;
 }
 
-let resp;
 function getBoard() {
     fetch("ajax/canvas", {
       headers:{
@@ -43,9 +37,20 @@ function getBoard() {
         return response.json();
     })
     .then(data => {
-        console.log(data);
+        board = data["board"];
+        updateBoard(board);
     });
 
+}
+
+function updateBoard(data) {
+    let coords = data.split(",");
+    for (const coord of coords) {
+        let v = parseInt(coord);
+        let x = v%250, y = Math.floor(v/250);
+        drawPixel(x, y);
+
+    }
 }
 
 // these variables help distinguish between actual clicks and drags
@@ -53,6 +58,8 @@ var dragging=false, mouseDownTime=0, mouseUpTime, mouseIsDown=false;
 let canvas = document.getElementById("canvas");
 let positionData = canvas.getBoundingClientRect();
 let panX = 0, panY = 0, mouseDownX = 0, mouseDownY = 0;
+
+const ctx = canvas.getContext("2d");
 
 // allow us to set zoom and scale indepentently
 const cameraZoom = document.getElementById("camera-zoom");
@@ -69,7 +76,7 @@ canvas.addEventListener("mouseup", function(e) {
     mouseIsDown = false;
     mouseUpTime = e.timeStamp;
     if (mouseUpTime - mouseDownTime < 300 && !dragging) {
-        drawPixel(canvas, e, scale);
+        drawPixel(e.offsetX, e.offsetY);
     }
     dragging = false;
 });
@@ -92,5 +99,6 @@ let scale = 4;
 cameraZoom.style.transform = `scale(${scale})`;
 
 clear(canvas);
+getBoard();
 
 
