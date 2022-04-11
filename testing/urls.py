@@ -4,6 +4,6 @@ from . import views
 
 urlpatterns = [
     path('hello/', views.say_hello),
-    path('home/', views.homepage),
+    path('', views.homepage),
     path('ajax/canvas', views.ajax_get_canvas),
 ]

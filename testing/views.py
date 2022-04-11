@@ -15,8 +15,8 @@ def homepage(request):
 def ajax_get_canvas(request):
     obj = Canvas.objects.filter(title="testcanvas")[0]
     data = {
-        "data": obj.data
+        "board": obj.data
     }
-    return JsonResponse(data)
+    return JsonResponse(data, status=200)
 
 

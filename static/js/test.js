@@ -32,6 +32,23 @@ function zoom(event, el) {
   el.style.transform = `scale(${scale})`;
 }
 
+let resp;
+function getBoard() {
+    fetch("ajax/canvas", {
+      headers:{
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+      },
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+    });
+
+}
+
 // these variables help distinguish between actual clicks and drags
 var dragf = false, mouseDownTime=0, mouseUpTime, mouseIsDown=false;
 let canvas = document.getElementById("canvas");
