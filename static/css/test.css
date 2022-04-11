@@ -10,5 +10,6 @@ body {
 }
 
 #canvas {
-    image-rendering: pixelated;
+  image-rendering: pixelated;
+  background-color: white;
 }
