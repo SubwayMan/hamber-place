@@ -26,12 +26,10 @@ def ajax_get_canvas(request):
 def ajax_update_canvas(request):
     canvas = Canvas.objects.filter(title="testcanvas")[0]
     post_data = json.load(request)
-    print(post_data)
     if (canvas.data != ""):
         canvas.data += ","
     canvas.data = canvas.data + str(post_data["pixel"])
     canvas.save()
-    print(canvas.data)
 
     return JsonResponse({}, status=200)
 

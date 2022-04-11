@@ -16,7 +16,8 @@ function getCookie(name) {
 }
 const csrftoken = getCookie("csrftoken");
 
-function drawPixel(x, y) {
+function drawPixel(x, y) {   
+
 
     //console.log(parseInt(x) + " " + parseInt(y));
     ctx.fillStyle = "green";
@@ -130,16 +131,22 @@ canvas.addEventListener("mousedown", function(e) {
 canvas.addEventListener("mouseup", function(e) {
     mouseIsDown = false;
     mouseUpTime = e.timeStamp;
-    if (mouseUpTime - mouseDownTime < 300 && !dragging) {
-        drawPixel(e.offsetX, e.offsetY);
-        sendPixel(e.offsetX, e.offsetY);
+    if (mouseUpTime - mouseDownTime < 400 && !dragging) {
+        const rect = canvas.getBoundingClientRect();
+        let x = Math.floor((e.clientX - rect.left) / scale);
+        let y = Math.floor((e.clientY - rect.top) / scale);
+        drawPixel(x, y);
+        sendPixel(x, y);
     }
     dragging = false;
 });
 
 cameraMove.addEventListener("mousemove", function(e) {
     if (mouseIsDown) {
-        dragging = true;
+        if (Math.abs(e.offsetX - mouseDownX) > 1 ||
+            Math.abs(e.offsetY - mouseDownY) > 1) {
+            dragging = true;
+        }
         panX += (e.offsetX - mouseDownX);
         panY += (e.offsetY - mouseDownY);
         limitPanVariables()
