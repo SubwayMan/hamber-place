@@ -17,8 +17,12 @@ def homepage(request):
 
 def ajax_get_canvas(request):
     canvas = Canvas.objects.filter(title="testcanvas")[0]
+    field = ["0" for i in range(250**2)]
+    for pixel in canvas.pixels.all():
+        field[pixel.position] = pixel.color
+
     data = {
-        "board": canvas.data
+        "board": "".join(canvas)
     }
     return JsonResponse(data, status=200)
 
