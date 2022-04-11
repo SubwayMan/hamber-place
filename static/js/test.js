@@ -1,3 +1,21 @@
+// apparently you need this for POST requests idk
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie("csrftoken");
+
 function drawPixel(x, y) {
 
     //console.log(parseInt(x) + " " + parseInt(y));
@@ -29,8 +47,8 @@ function zoom(event, el) {
 function getBoard() {
     fetch("ajax/canvas", {
       headers:{
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
       },
     })
     .then(response => {
@@ -51,6 +69,24 @@ function updateBoard(data) {
         drawPixel(x, y);
 
     }
+}
+
+function sendPixel(x, y) {
+    fetch("ajax/update", {
+        method: "post",
+        credentials: "same-origin",
+        headers: {
+            "Accept": "application/json",
+            "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
+            "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify({"x": x, "y": y}) //JavaScript object of data to POST
+    })
+    .then(response => {
+          return response.json() //Convert response to JSON
+    });
+    //.then(data => {
+    //})
 }
 
 // these variables help distinguish between actual clicks and drags
@@ -77,6 +113,7 @@ canvas.addEventListener("mouseup", function(e) {
     mouseUpTime = e.timeStamp;
     if (mouseUpTime - mouseDownTime < 300 && !dragging) {
         drawPixel(e.offsetX, e.offsetY);
+        sendPixel(e.offsetX, e.offsetY);
     }
     dragging = false;
 });
