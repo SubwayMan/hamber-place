@@ -130,6 +130,14 @@ function sendPixel(x, y, color) {
     //})
 }
 
+// websocket stuff
+const websocket = new WebSocket( 'ws://' + window.location.host + '/ws/canvas/');
+
+websocket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    console.log(data);
+}
+
 // these variables help distinguish between actual clicks and drags
 var dragging=false, mouseDownTime=0, mouseUpTime, mouseIsDown=false;
 let canvas = document.getElementById("canvas");
