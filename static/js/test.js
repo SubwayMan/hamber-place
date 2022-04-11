@@ -174,7 +174,7 @@ cameraMove.addEventListener("mousemove", function(e) {
         }
         panX += (e.offsetX - mouseDownX);
         panY += (e.offsetY - mouseDownY);
-        limitPanVariables()
+        limitPanVariables();
         panCanvas(cameraMove, panX, panY);
 
     }

@@ -26,20 +26,23 @@ SECRET_KEY = 'django-insecure-(@iy0asg)ialx7vd0(bt6m!87+5y^46)(1j5yrnlu+3sy9&o15
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.0.20",
-    "127.0.0.1"]
+# unsecure, only for testing - change on prod
+ALLOWED_HOSTS = [
+    "*"
+    ]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'testing',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'testing'
 ]
 
 MIDDLEWARE = [
@@ -79,7 +82,7 @@ WSGI_APPLICATION = 'hamberplace.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -128,3 +131,4 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+ASGI_APPLICATION = 'hamberplace.asgi.application'
