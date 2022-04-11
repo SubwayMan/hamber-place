@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
+from .models import Canvas
 
 # Create your views here.
 def say_hello(request):
@@ -10,4 +11,12 @@ def say_hello(request):
 def homepage(request):
     template = loader.get_template("index.html")
     return HttpResponse(template.render())
+
+def ajax_get_canvas(request):
+    obj = Canvas.objects.filter(title="testcanvas")[0]
+    data = {
+        "data": obj.data
+    }
+    return JsonResponse(data)
+
 
