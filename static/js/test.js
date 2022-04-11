@@ -20,6 +20,7 @@ function drawPixel(x, y) {
 
 
     //console.log(parseInt(x) + " " + parseInt(y));
+    console.log(document.querySelector('input[name="color"]:checked').value)
     ctx.fillStyle = "green";
     ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
     

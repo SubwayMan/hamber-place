@@ -13,3 +13,62 @@ body {
   image-rendering: pixelated;
   background-color: white;
 }
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: lightgrey;
+  text-align: center;
+}
+
+label {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 9px;
+  cursor: pointer;
+}
+
+label.span{
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: transform .2s ease-in-out;
+}
+
+.red{
+  background: #FF0000;
+}
+
+.orange{
+  background: #ff9900;
+}
+
+.yellow{
+  background: #fffb00;
+}
+
+.green{
+  background: #00FF00;
+}
+
+.blue{
+  background: #0099ff;
+}
+
+.pink{
+  background: #9900ff;
+}
+
+.black{
+  background: #000000;
+}
+
+.white{
+  background: #ffffff;
+}
+
