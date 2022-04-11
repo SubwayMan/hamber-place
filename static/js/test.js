@@ -1,11 +1,24 @@
-function drawPixel(canvas, event, scale) {
-    const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / scale;
-    const y = (event.clientY - rect.top) / scale;
-    
+// apparently you need this for POST requests idk
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie("csrftoken");
+
+function drawPixel(x, y) {
+
     //console.log(parseInt(x) + " " + parseInt(y));
-    
-    const ctx = canvas.getContext("2d");
     ctx.fillStyle = "green";
     ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
     
@@ -50,20 +63,48 @@ function zoom(event, el) {
   el.style.transform = `scale(${scale})`;
 }
 
-let resp;
 function getBoard() {
     fetch("ajax/canvas", {
       headers:{
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
       },
     })
     .then(response => {
         return response.json();
     })
     .then(data => {
-        console.log(data);
+        board = data["board"];
+        updateBoard(board);
     });
+}
+
+function updateBoard(data) {
+    let coords = data.split(",");
+    for (const coord of coords) {
+        let v = parseInt(coord);
+        let x = v%250, y = Math.floor(v/250);
+        drawPixel(x, y);
+
+    }
+}
+
+function sendPixel(x, y) {
+    fetch("ajax/update", {
+        method: "post",
+        credentials: "same-origin",
+        headers: {
+            "Accept": "application/json",
+            "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
+            "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify({"x": x, "y": y}) //JavaScript object of data to POST
+    })
+    .then(response => {
+          return response.json() //Convert response to JSON
+    });
+    //.then(data => {
+    //})
 }
 
 // these variables help distinguish between actual clicks and drags
@@ -71,6 +112,8 @@ var dragging=false, mouseDownTime=0, mouseUpTime, mouseIsDown=false;
 let canvas = document.getElementById("canvas");
 let positionData = canvas.getBoundingClientRect();
 let panX = 0, panY = 0, mouseDownX = 0, mouseDownY = 0;
+
+const ctx = canvas.getContext("2d");
 
 // allow us to set zoom and scale indepentently
 const cameraZoom = document.getElementById("camera-zoom");
@@ -87,7 +130,8 @@ canvas.addEventListener("mouseup", function(e) {
     mouseIsDown = false;
     mouseUpTime = e.timeStamp;
     if (mouseUpTime - mouseDownTime < 300 && !dragging) {
-        drawPixel(canvas, e, scale);
+        drawPixel(e.offsetX, e.offsetY);
+        sendPixel(e.offsetX, e.offsetY);
     }
     dragging = false;
 });
@@ -112,5 +156,6 @@ let scale = 4;
 cameraZoom.style.transform = `scale(${scale})`;
 
 clear(canvas);
+getBoard();
 
 
