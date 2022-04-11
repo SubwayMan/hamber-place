@@ -72,6 +72,7 @@ function updateBoard(data) {
 }
 
 function sendPixel(x, y) {
+    let px = y*250 + x;
     fetch("ajax/update", {
         method: "post",
         credentials: "same-origin",
@@ -80,7 +81,7 @@ function sendPixel(x, y) {
             "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
             "X-CSRFToken": csrftoken,
         },
-        body: JSON.stringify({"x": x, "y": y}) //JavaScript object of data to POST
+        body: JSON.stringify({pixel: px}) //JavaScript object of data to POST
     })
     .then(response => {
           return response.json() //Convert response to JSON
