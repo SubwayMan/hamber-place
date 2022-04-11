@@ -19,5 +19,5 @@ To allow other computers to access the site over LAN, run:
 ```
 python3 manage.py runserver 0.0.0.0:8000
 ```
-Navigate to `127.0.0.1:8000/home/` to see the canvas.
+Navigate to `127.0.0.1:8000/` to see the canvas.
 
