@@ -1,3 +1,15 @@
+// color enums
+const colors = [
+    [255, 255, 255, 255],
+    [255, 0, 0, 255],
+    [255, 153, 0, 255],
+    [255, 255, 0, 255],
+    [0, 255, 0, 255],
+    [0, 153, 255, 255],
+    [153, 0, 255, 255],
+    [0, 0, 0, 255]
+];
+
 // apparently you need this for POST requests idk
 function getCookie(name) {
     let cookieValue = null;
@@ -20,7 +32,7 @@ function drawPixel(x, y) {
 
 
     //console.log(parseInt(x) + " " + parseInt(y));
-    console.log(document.querySelector('input[name="color"]:checked').value)
+    colorId = document.querySelector('input[name="color"]:checked').value
     ctx.fillStyle = "green";
     ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
     
@@ -82,13 +94,18 @@ function getBoard() {
 }
 
 function updateBoard(data) {
-    let coords = data.split(",");
-    for (const coord of coords) {
-        let v = parseInt(coord);
-        let x = v%250, y = Math.floor(v/250);
-        drawPixel(x, y);
-
+    for (var i=0; i<data.length; i++) {
+        id = parseInt(data[i]);
+        for (var j=0; j<4; j++) {
+            boardState[i*4 + j] = colors[id][j];
+        }
     }
+    redrawCanvas();
+}
+
+function redrawCanvas() {
+    let dat = new ImageData(boardState, 250, 250);
+    ctx.putImageData(dat, 0, 0);
 }
 
 function sendPixel(x, y) {
@@ -121,6 +138,9 @@ const ctx = canvas.getContext("2d");
 // allow us to set zoom and scale indepentently
 const cameraZoom = document.getElementById("camera-zoom");
 const cameraMove = document.getElementById("camera-move");
+
+// store board state, to use PutImageData
+let boardState = new Uint8ClampedArray(250*250*4).fill(255);
 
 canvas.addEventListener("mousedown", function(e) {
     mouseIsDown = true;

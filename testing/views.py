@@ -19,11 +19,12 @@ def ajax_get_canvas(request):
     canvas = Canvas.objects.filter(title="testcanvas")[0]
     field = ["0" for i in range(250**2)]
     for pixel in canvas.pixels.all():
-        field[pixel.position] = pixel.color
+        field[pixel.position] = str(pixel.color)
 
     data = {
-        "board": "".join(canvas)
+        "board": "".join(field)
     }
+    print("".join(field)[:100])
     return JsonResponse(data, status=200)
 
 def ajax_update_canvas(request):
