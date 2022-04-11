@@ -2,17 +2,36 @@ function drawPixel(canvas, event, scale) {
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) / scale;
     const y = (event.clientY - rect.top) / scale;
-
+    
     //console.log(parseInt(x) + " " + parseInt(y));
-
+    
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "green";
     ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
-
+    
 }
 
 function panCanvas(cv, xDist, yDist) {
     cv.style.transform = `translateX(${xDist}px) translateY(${yDist}px)`
+}
+
+function limitPanVariables() {
+    let centerX = window.innerWidth / 2;
+    let centerY = window.innerHeight / 2;
+    let positionData = canvas.getBoundingClientRect();
+
+    if (positionData.top > centerY) {
+        panY = positionData.height/2
+    }
+    if (positionData.bottom < centerY) {
+        panY = -positionData.height/2 + 10
+    }
+    if (positionData.left > centerX) {
+        panX = positionData.width/2
+    }
+    if (positionData.right < centerX) {
+        panX = -positionData.width/2 + 10
+    }
 }
 
 function clear(canvas) {
@@ -45,7 +64,6 @@ function getBoard() {
     .then(data => {
         console.log(data);
     });
-
 }
 
 // these variables help distinguish between actual clicks and drags
@@ -79,10 +97,12 @@ cameraMove.addEventListener("mousemove", function(e) {
         dragging = true;
         panX += (e.offsetX - mouseDownX);
         panY += (e.offsetY - mouseDownY);
-
+        limitPanVariables()
         panCanvas(cameraMove, panX, panY);
+
     }
 });
+
 
 cameraZoom.addEventListener("wheel", function(e) {
     zoom(e, cameraZoom);
