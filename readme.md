@@ -4,16 +4,21 @@ A replica of r/place for educational use.
 
 ### Setup
 
-Ensure you have `pipenv` installed.
+Note that windows users should use WSL.
+Ensure you have `pipenv`, `redis` installed.
 Clone the repository, then run `pipenv shell` inside the root folder.
-When pipenv has finished setup, run `pipenv install django`.
+When pipenv has finished setup, run `pipenv install`.
 
 ### Starting the server
 
 Ensure that `pipenv shell` has been run, then run:
 ```
+python3 setup.py
+python3 manage.py migrate
 python3 manage.py runserver
 ```
+`setup.py` only needs to be run once upon cloning, while `migrate` should be run after every pull and 
+database structure update.
 
 To allow other computers to access the site over LAN, run:
 ```
