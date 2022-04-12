@@ -2,6 +2,11 @@
 
 A replica of r/place for educational use.
 
+### Disclaimer
+
+This project is at an Alpha level of readiness. The code is not sufficiently organized and the setup instructions provided in this README may be outdated.
+This code is currently only published for ease of access by its authors.
+
 ### Setup
 
 Note that windows users should use WSL.
