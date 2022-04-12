@@ -28,7 +28,6 @@ def ajax_get_canvas(request):
 
 def ajax_update_canvas(request):
     post_data = json.load(request)
-    print(post_data)
     user = TempUser.objects.filter(userId=post_data["auth"])
     if user:
         user = user[0]

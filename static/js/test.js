@@ -111,7 +111,6 @@ function redrawCanvas() {
 
 function sendPixel(x, y, color) {
     let px = y*250 + x;
-    console.log(userId);
     fetch("ajax/update", {
         method: "post",
         credentials: "same-origin",
