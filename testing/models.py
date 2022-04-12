@@ -12,7 +12,7 @@ class Canvas(models.Model):
 
 
 class Pixel(models.Model):
-    canvas = models.ForeignKey(Canvas, on_delete=models.CASCADE)
+    canvas = models.ForeignKey(Canvas, on_delete=models.CASCADE, related_name="pixels")
     position = models.PositiveIntegerField()
     color = models.PositiveSmallIntegerField()
 

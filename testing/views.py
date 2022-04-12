@@ -53,7 +53,7 @@ def ajax_update_canvas(request):
 
 def ajax_validate_user(request):
     post_data = json.load(request)
-    user = TempUser.objects.filter(userID=post_data["auth"])
+    user = TempUser.objects.filter(userId=post_data["auth"])
     if user:
         return JsonResponse({"message": "successful login"}, status=200)
     else:

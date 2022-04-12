@@ -127,6 +127,26 @@ function sendPixel(x, y, color) {
     //})
 }
 
+function login(id) {
+    fetch("ajax/login", {
+        method: "post",
+        credentials: "same-origin",
+        headers: {
+            "Accept": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify({auth: id})
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(result => {
+        console.log(result);
+    });
+}
+        
+
 // websocket stuff
 const websocket = new WebSocket( 'ws://' + window.location.host + '/ws/canvas/');
 
