@@ -82,9 +82,9 @@ function zoom(event, el) {
 
 function getBoard() {
     fetch("ajax/canvas", {
-      headers:{
-          "Accept": "application/json",
-          "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
+        headers:{
+            "Accept": "application/json",
+            "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
       },
     })
     .then(response => {
@@ -102,6 +102,7 @@ function updateBoard(data) {
         updateColor(i, id);
     }
 }
+
 
 function redrawCanvas() {
     let dat = new ImageData(boardState, 250, 250);
@@ -163,6 +164,24 @@ function login() {
 }
 login();    
 
+let timerInterval = setInterval(updateTimer, 1000);
+function updateTimer() {
+    let timer = document.getElementById("timer");
+    let val = timer.textContent.trim();
+    if (val !== "Ready to place Tile!") {
+        let time = +val.split(" ")[0].slice(0,-1);
+
+        if (time == 0) {
+            timer.textContent = "Ready to place Tile!";
+            timer.classList.remove("waiting");
+        } else {
+            time -= 1;
+            timer.textContent = time + "s remaining";
+        }
+    }
+
+}
+
 // websocket stuff
 const websocket = new WebSocket( 'ws://' + window.location.host + '/ws/canvas/');
 
@@ -202,16 +221,21 @@ canvas.addEventListener("mousedown", function(e) {
 });
 
 canvas.addEventListener("mouseup", function(e) {
+    let timer = document.getElementById("timer");
+
     e.preventDefault();
     mouseIsDown = false;
     mouseUpTime = e.timeStamp;
-    if (mouseUpTime - mouseDownTime < 400 && !dragging) {
+    if (mouseUpTime - mouseDownTime < 400 && !dragging && !timer.classList.contains("waiting")) {
         const rect = canvas.getBoundingClientRect();
         let x = Math.floor((e.clientX - rect.left) / scale);
         let y = Math.floor((e.clientY - rect.top) / scale);
         let colorId = document.querySelector('input[name="color"]:checked').value
         drawPixel(x, y, colorId);
         sendPixel(x, y, colorId);
+
+        timer.classList.add("waiting")
+        timer.textContent = "10s remaining"
     }
     dragging = false;
 });
