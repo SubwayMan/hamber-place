@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
-from .models import Canvas, Pixel
+from .models import Canvas, Pixel, TempUser
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db.models import F
 import json
+import datetime
 # Create your views here.
 def say_hello(request):
     return HttpResponse("Hello World")
@@ -27,6 +28,18 @@ def ajax_get_canvas(request):
 
 def ajax_update_canvas(request):
     post_data = json.load(request)
+    user = TempUser.objects.filter(userID=post_data["auth"])
+    if user:
+        user = user[0]
+    else:
+        return JsonResponse({"message": "user id not found"}, status=400)
+    
+    currentTime = datetime.datetime()
+    if (currentTime - user.lastPost).totalSeconds < 10:
+        return JsonResponse({"message": "You are on cooldown!"}, status=400)
+    
+    user.lastPost = currentTime
+    user.save()
     canvas = Canvas.objects.filter(title="testcanvas")[0]
     pixel = Pixel.objects.filter(position=post_data["pixel"])
     if pixel:
@@ -36,6 +49,13 @@ def ajax_update_canvas(request):
         pixel = Pixel(canvas=canvas, position=post_data["pixel"], color=post_data["color"])
     
     pixel.save()
-    return JsonResponse({}, status=200)
+    return JsonResponse({"message": "success"}, status=200)
 
+def ajax_validate_user(request):
+    post_data = json.load(request)
+    user = TempUser.objects.filter(userID=post_data["auth"])
+    if user:
+        return JsonResponse({"message": "successful login"}, status=200)
+    else:
+        return JsonResponse({"message": "user id not found"}, status=400)
     
