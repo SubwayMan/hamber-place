@@ -39,7 +39,6 @@ function drawPixel(x, y, colorID) {
 
 
     updateColor(y*250+x, colorID);
-    redrawCanvas();
 }
 
 function panCanvas(cv, xDist, yDist) {
@@ -102,7 +101,6 @@ function updateBoard(data) {
         id = parseInt(data[i]);
         updateColor(i, id);
     }
-    redrawCanvas();
 }
 
 function redrawCanvas() {
@@ -135,8 +133,6 @@ const websocket = new WebSocket( 'ws://' + window.location.host + '/ws/canvas/')
 websocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
     updateColor(data.position, data.color)
-    redrawCanvas()
-
 }
 
 function sendWebsocketPixel(x, y, color) {
@@ -203,6 +199,9 @@ cameraMove.addEventListener("mousemove", function(e) {
 cameraZoom.addEventListener("wheel", function(e) {
     zoom(e, cameraZoom);
 });
+
+// redraw canvas every 200ms
+setInterval(redrawCanvas, 200);
 
 let scale = 4;
 cameraZoom.style.transform = `scale(${scale})`;
