@@ -110,6 +110,7 @@ function redrawCanvas() {
 
 function sendPixel(x, y, color) {
     let px = y*250 + x;
+    console.log(userId);
     fetch("ajax/update", {
         method: "post",
         credentials: "same-origin",
@@ -118,16 +119,26 @@ function sendPixel(x, y, color) {
             "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
             "X-CSRFToken": csrftoken,
         },
-        body: JSON.stringify({pixel: px, color: color}) //JavaScript object of data to POST
+        body: JSON.stringify({pixel: px, color: color, auth: userId}) //JavaScript object of data to POST
     })
     .then(response => {
-          return response.json() //Convert response to JSON
+          return response.status;
+    })
+    .then(status => {
+        if (status==200) {
+            sendWebsocketPixel(x, y, color);
+        }
     });
     //.then(data => {
     //})
 }
 
-function login(id) {
+let userId;
+function login() {
+    id = prompt();
+    while (!id) {
+        id = prompt();
+    }
     fetch("ajax/login", {
         method: "post",
         credentials: "same-origin",
@@ -139,13 +150,18 @@ function login(id) {
         body: JSON.stringify({auth: id})
     })
     .then(response => {
-        return response.json();
+        return response.status;
     })
     .then(result => {
-        console.log(result);
+        if (result==200) {
+            userId = id;
+        } else {
+            login();
+        }
+        
     });
 }
-        
+login();    
 
 // websocket stuff
 const websocket = new WebSocket( 'ws://' + window.location.host + '/ws/canvas/');
@@ -196,7 +212,6 @@ canvas.addEventListener("mouseup", function(e) {
         let colorId = document.querySelector('input[name="color"]:checked').value
         drawPixel(x, y, colorId);
         sendPixel(x, y, colorId);
-        sendWebsocketPixel(x, y, colorId);
     }
     dragging = false;
 });

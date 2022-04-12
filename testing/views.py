@@ -28,14 +28,15 @@ def ajax_get_canvas(request):
 
 def ajax_update_canvas(request):
     post_data = json.load(request)
-    user = TempUser.objects.filter(userID=post_data["auth"])
+    print(post_data)
+    user = TempUser.objects.filter(userId=post_data["auth"])
     if user:
         user = user[0]
     else:
         return JsonResponse({"message": "user id not found"}, status=400)
     
-    currentTime = datetime.datetime()
-    if (currentTime - user.lastPost).totalSeconds < 10:
+    currentTime = datetime.datetime.now(datetime.timezone.utc)
+    if (currentTime - user.lastPost).total_seconds() < 10:
         return JsonResponse({"message": "You are on cooldown!"}, status=400)
     
     user.lastPost = currentTime
