@@ -4,6 +4,9 @@ from django.template import loader
 from .models import Canvas, Pixel, TempUser
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db.models import F
+from rest_framework import viewsets
+
+
 import json
 import datetime
 # Create your views here.
@@ -28,6 +31,15 @@ def ajax_get_canvas(request):
 
 def ajax_update_canvas(request):
     post_data = json.load(request)
+    if not check_fields(post_data, (str, "auth"), (int, "pixel"), (str, "color")):
+        return JsonResponse({"message": "Badly formatted request"}, status=400)
+
+    if not 0 <= post_data["pixel"] < 250**2:
+        return JsonResponse({"message": "Bad pixel placement"}, status=400)
+
+    if not 0 <= int(post_data["color"], 16) < 8:
+        return JsonResponse({"message": "Invalid color"}, status=400)
+    
     user = TempUser.objects.filter(userId=post_data["auth"])
     if user:
         user = user[0]
@@ -53,9 +65,18 @@ def ajax_update_canvas(request):
 
 def ajax_validate_user(request):
     post_data = json.load(request)
+    if not check_fields(post_data, (str, "auth")):
+        return JsonResponse({"message": "Badly formatted request"}, status=400)
+
     user = TempUser.objects.filter(userId=post_data["auth"])
     if user:
         return JsonResponse({"message": "successful login"}, status=200)
     else:
         return JsonResponse({"message": "user id not found"}, status=400)
-    
+
+def check_fields(request, *args):
+    for argtype, arg in args:
+        print(argtype, type(request[arg]), arg)
+        if arg not in request or type(request[arg]) != argtype:
+            return False
+    return True
