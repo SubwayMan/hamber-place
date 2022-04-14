@@ -211,17 +211,17 @@ canvas.addEventListener("mouseup", function(e) {
         const rect = canvas.getBoundingClientRect();
         let x = Math.floor((e.clientX - rect.left) / scale);
         let y = Math.floor((e.clientY - rect.top) / scale);
-        let colorId = document.querySelector('input[name="color"]:checked').value
+        let colorId = document.querySelector('input[name="color"]:checked').value;
         drawPixel(x, y, colorId);
         sendPixel(x, y, colorId);
 
-        timer.classList.add("waiting")
-        timer.textContent = "10s remaining"
+        timer.classList.add("waiting");
+        timer.textContent = "10s remaining";
     }
     dragging = false;
 });
 
-cameraMove.addEventListener("mousemove", function(e) {
+canvas.addEventListener("mousemove", function(e) {
     if (mouseIsDown) {
         if (Math.abs(e.offsetX - mouseDownX) > 1 ||
             Math.abs(e.offsetY - mouseDownY) > 1) {
@@ -234,6 +234,10 @@ cameraMove.addEventListener("mousemove", function(e) {
     }
 });
 
+document.addEventListener("mouseup", function(e) {
+    mouseIsDown = false;
+    dragging = false;
+});
 
 cameraZoom.addEventListener("wheel", function(e) {
     zoom(e, cameraZoom);
