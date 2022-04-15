@@ -4,7 +4,8 @@ from django.template import loader
 from .models import Canvas, Pixel, TempUser
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db.models import F
-from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 
 import json
@@ -79,3 +80,13 @@ def check_fields(request, *args):
         if arg not in request or type(request[arg]) != argtype:
             return False
     return True
+
+class API(APIView):
+    def get(self, request, *args, **kwargs):
+        data = {
+            "message": "successful test"
+        }
+        return Response(data)
+
+    # def update_pixel(self, request, *args, **kwargs):
+
