@@ -72,6 +72,38 @@ label.span{
   background: #ffffff;
 }
 
+.col8{
+  background: #CF6EE4;
+}
+
+.col9{
+  background: #00D3DD;
+}
+
+.col10{
+  background: #02BE01;
+}
+
+.col11{
+  background: #E4E4E4;
+}
+
+.col12{
+  background: #888888;
+}
+
+.col13{
+  background: #FFA7D1;
+}
+
+.col14{
+  background: #0083C7;
+}
+
+.col15{
+  background: #A06A42;
+}
+
 #timer {
   display: inline-block;
   font-size: 1.2rem;
