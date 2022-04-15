@@ -8,6 +8,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import PostSerializer
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
+class NoCsrf(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return
+
+authentication_classes = (NoCsrf, BasicAuthentication)
 
 
 import json
