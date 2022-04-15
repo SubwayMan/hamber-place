@@ -4,10 +4,18 @@ const colors = [
     [255, 0, 0, 255],
     [255, 153, 0, 255],
     [255, 255, 0, 255],
-    [0, 255, 0, 255],
+    [148, 224, 68, 255],
     [0, 153, 255, 255],
     [153, 0, 255, 255],
-    [0, 0, 0, 255]
+    [0, 0, 0, 255, 255],
+    [207, 110, 228, 255],
+    [0, 211, 221, 255],
+    [2, 190, 1, 255],
+    [228, 228, 228, 255],
+    [136, 136, 136, 255],
+    [255, 167, 209, 255],
+    [0, 131, 199, 255],
+    [160, 106, 66, 255]
 ];
 
 // apparently you need this for POST requests idk
@@ -80,7 +88,7 @@ function getBoard() {
 
 function updateBoard(data) {
     for (var i=0; i<data.length; i++) {
-        id = parseInt(data[i]);
+        id = parseInt(data[i], 16);
         updateColor(i, id);
     }
 }
@@ -168,7 +176,7 @@ const websocket = new WebSocket( 'ws://' + window.location.host + '/ws/canvas/')
 
 websocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
-    updateColor(data.position, data.color)
+    updateColor(data.position, parseInt(data.color, 16))
 }
 
 function sendWebsocketPixel(x, y, color) {
@@ -213,7 +221,7 @@ canvas.addEventListener("mouseup", function(e) {
         let y = Math.floor((e.clientY - rect.top) / scale);
         let colorId = document.querySelector('input[name="color"]:checked').value;
         drawPixel(x, y, colorId);
-        sendPixel(x, y, colorId);
+        sendPixel(x, y, parseInt(colorId).toString(16));
 
         timer.classList.add("waiting");
         timer.textContent = "10s remaining";

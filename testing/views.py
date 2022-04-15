@@ -22,7 +22,7 @@ def ajax_get_canvas(request):
     canvas = Canvas.objects.filter(title="testcanvas")[0]
     field = ["0" for i in range(250**2)]
     for pixel in canvas.pixels.all():
-        field[pixel.position] = str(pixel.color)
+        field[pixel.position] = pixel.color
 
     data = {
         "board": "".join(field)
@@ -37,7 +37,7 @@ def ajax_update_canvas(request):
     if not 0 <= post_data["pixel"] < 250**2:
         return JsonResponse({"message": "Bad pixel placement"}, status=400)
 
-    if not 0 <= int(post_data["color"], 16) < 8:
+    if not 0 <= int(post_data["color"], 16) < 16:
         return JsonResponse({"message": "Invalid color"}, status=400)
     
     user = TempUser.objects.filter(userId=post_data["auth"])
@@ -76,7 +76,6 @@ def ajax_validate_user(request):
 
 def check_fields(request, *args):
     for argtype, arg in args:
-        print(argtype, type(request[arg]), arg)
         if arg not in request or type(request[arg]) != argtype:
             return False
     return True
