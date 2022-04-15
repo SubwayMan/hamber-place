@@ -6,6 +6,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db.models import F
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .serializers import PostSerializer
+from django.views.decorators.csrf import csrf_exempt
 
 
 import json
@@ -30,6 +32,7 @@ def ajax_get_canvas(request):
     }
     return JsonResponse(data, status=200)
 
+@csrf_exempt
 def ajax_update_canvas(request):
     post_data = json.load(request)
     if not check_fields(post_data, (str, "auth"), (int, "pixel"), (str, "color")):
@@ -83,10 +86,17 @@ def check_fields(request, *args):
 
 class API(APIView):
     def get(self, request, *args, **kwargs):
-        data = {
-            "message": "successful test"
-        }
-        return Response(data)
+        q = Pixel.objects.all()
+        s = PostSerializer(q, many=True)
+        return Response(s.data)
+
+    def post(self, request, *args, **kwargs):
+        s = PostSerializer(data=request.data)
+        if s.is_valid():
+            print(s)
+            return Response(s.data)
+        return Response(s.errors)
+
 
     # def update_pixel(self, request, *args, **kwargs):
 

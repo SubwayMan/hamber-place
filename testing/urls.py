@@ -10,6 +10,5 @@ urlpatterns = [
     path('ajax/canvas', views.ajax_get_canvas),
     path('ajax/update', views.ajax_update_canvas),
     path('ajax/login', views.ajax_validate_user),
-    path('API/', API.as_view(), name="test"),
 
 ]
