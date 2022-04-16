@@ -147,7 +147,9 @@ function login() {
     .then(result => {
         if (result==200) {
             userId = id;
-            timer.textContent = "10s remaining";
+            timer.textContent = "3s remaining";
+            time = 3;
+            setTimeout(updateTimer, 1000);
         } else {
             login();
         }
@@ -155,22 +157,22 @@ function login() {
     });
 }
 
-let timerInterval = setInterval(updateTimer, 1000);
 let timer = document.getElementById("timer");
+let time = 0;
+
 function updateTimer() {
     if (userId == undefined) {
         return;
     }
     let val = timer.textContent.trim();
     if (val !== "Ready to place Tile!") {
-        let time = +val.split(" ")[0].slice(0,-1);
-
+        time -= 1;
         if (time == 0) {
             timer.textContent = "Ready to place Tile!";
             timer.classList.remove("waiting");
         } else {
-            time -= 1;
             timer.textContent = time + "s remaining";
+            setTimeout(updateTimer, 1000);
         }
     }
 
@@ -223,6 +225,8 @@ canvas.addEventListener("mouseup", function(e) {
 
         timer.classList.add("waiting");
         timer.textContent = "10s remaining";
+        time = 10;
+        setTimeout(updateTimer, 1000);
     }
     dragging = false;
 });

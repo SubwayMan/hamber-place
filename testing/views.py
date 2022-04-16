@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import PostSerializer
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.views.decorators.csrf import csrf_exempt
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -35,6 +36,7 @@ def ajax_get_canvas(request):
     }
     return JsonResponse(data, status=200)
 
+@csrf_exempt
 def ajax_update_canvas(request):
     post_data = json.load(request)
     if not check_fields(post_data, (str, "auth"), (int, "pixel"), (str, "color")):
