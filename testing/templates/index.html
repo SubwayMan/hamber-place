@@ -11,8 +11,6 @@
                 <canvas id="canvas" width="250" height="250"></canvas>
             </div>
         </div>
-        <script src="{% static 'js/test.js' %}"></script>
-        <link href="{% static 'css/test.css' %}" type="text/css" rel="stylesheet">
         
         <div class="footer">
             <input type="radio" name="color" id="white" value="0">
@@ -64,9 +62,11 @@
             <label for="col15" class="col15"> </label>
 
             <span id="timer">
-                Ready to place Tile!
+                <a id="login" href="#">Login</a> to place tiles
             </span>
         </div>
+        <script src="{% static 'js/test.js' %}"></script>
+        <link href="{% static 'css/test.css' %}" type="text/css" rel="stylesheet">
     </body>
 </html>
 

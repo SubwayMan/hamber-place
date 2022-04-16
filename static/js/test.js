@@ -147,17 +147,20 @@ function login() {
     .then(result => {
         if (result==200) {
             userId = id;
+            timer.textContent = "10s remaining";
         } else {
             login();
         }
         
     });
 }
-login();    
 
 let timerInterval = setInterval(updateTimer, 1000);
+let timer = document.getElementById("timer");
 function updateTimer() {
-    let timer = document.getElementById("timer");
+    if (userId == undefined) {
+        return;
+    }
     let val = timer.textContent.trim();
     if (val !== "Ready to place Tile!") {
         let time = +val.split(" ")[0].slice(0,-1);
@@ -209,7 +212,8 @@ canvas.addEventListener("mouseup", function(e) {
     e.preventDefault();
     mouseIsDown = false;
     mouseUpTime = e.timeStamp;
-    if (mouseUpTime - mouseDownTime < 400 && !dragging && !timer.classList.contains("waiting")) {
+    if (mouseUpTime - mouseDownTime < 400 && !dragging 
+        && !timer.classList.contains("waiting") && userId) {
         const rect = canvas.getBoundingClientRect();
         let x = Math.floor((e.clientX - rect.left) / scale);
         let y = Math.floor((e.clientY - rect.top) / scale);
@@ -240,6 +244,12 @@ document.addEventListener("mouseup", function(e) {
     mouseIsDown = false;
     dragging = false;
 });
+
+loginLink = document.getElementById("login");
+loginLink.onclick = function(e) {
+    e.preventDefault();
+    login();
+}
 
 cameraZoom.addEventListener("wheel", function(e) {
     zoom(e, cameraZoom);
