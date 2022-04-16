@@ -7,15 +7,10 @@ from django.db.models import F
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import PostSerializer
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from channels.generic.websocket import AsyncWebsocketConsumer
 
-class NoCsrf(SessionAuthentication):
-
-    def enforce_csrf(self, request):
-        return
-
-authentication_classes = (NoCsrf, BasicAuthentication)
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 
 import json
@@ -40,7 +35,6 @@ def ajax_get_canvas(request):
     }
     return JsonResponse(data, status=200)
 
-@csrf_exempt
 def ajax_update_canvas(request):
     post_data = json.load(request)
     if not check_fields(post_data, (str, "auth"), (int, "pixel"), (str, "color")):
@@ -73,6 +67,7 @@ def ajax_update_canvas(request):
         pixel = Pixel(canvas=canvas, position=post_data["pixel"], color=post_data["color"])
     
     pixel.save()
+    websocket_send_pixel(post_data["pixel"], post_data["color"])
     return JsonResponse({"message": "success"}, status=200)
 
 def ajax_validate_user(request):
@@ -91,6 +86,17 @@ def check_fields(request, *args):
         if arg not in request or type(request[arg]) != argtype:
             return False
     return True
+
+def websocket_send_pixel(position, color):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "canvas",
+        {
+            "type": "pixel_event",
+            "position": position,
+            "color": color
+        }
+    )
 
 class API(APIView):
     def get(self, request, *args, **kwargs):

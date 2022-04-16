@@ -113,12 +113,14 @@ function sendPixel(x, y, color) {
     })
     .then(response => {
           return response.status;
-    })
+    });
+    /*
     .then(status => {
         if (status==200) {
             sendWebsocketPixel(x, y, color);
         }
     });
+    */
     //.then(data => {
     //})
 }
@@ -177,14 +179,6 @@ const websocket = new WebSocket( 'ws://' + window.location.host + '/ws/canvas/')
 websocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
     updateColor(data.position, parseInt(data.color, 16))
-}
-
-function sendWebsocketPixel(x, y, color) {
-    let position = 250*y + x;
-    websocket.send(JSON.stringify({
-        "position": position,
-        "color": color
-    }));
 }
 
 // these variables help distinguish between actual clicks and drags
