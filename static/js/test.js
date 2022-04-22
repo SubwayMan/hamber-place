@@ -1,3 +1,5 @@
+import { getCookie } from './utility.js';
+
 // color enums
 const colors = [
     [255, 255, 255, 255],
@@ -17,23 +19,6 @@ const colors = [
     [0, 131, 199, 255],
     [160, 106, 66, 255]
 ];
-
-// apparently you need this for POST requests idk
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-        const cookies = document.cookie.split(";");
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
 
 function updateColor(position, colorId) {
     for (let i = 0; i<4; i++) {
@@ -81,14 +66,14 @@ function getBoard() {
         return response.json();
     })
     .then(data => {
-        board = data["board"];
+        let board = data["board"];
         updateBoard(board);
     });
 }
 
 function updateBoard(data) {
     for (var i=0; i<data.length; i++) {
-        id = parseInt(data[i], 16);
+        let id = parseInt(data[i], 16);
         updateColor(i, id);
     }
 }
@@ -127,7 +112,7 @@ function sendPixel(x, y, color) {
 
 let userId;
 function login() {
-    id = prompt();
+    let id = prompt();
     while (!id) {
         id = prompt();
     }
@@ -249,7 +234,7 @@ document.addEventListener("mouseup", function(e) {
     dragging = false;
 });
 
-loginLink = document.getElementById("login");
+let loginLink = document.getElementById("login");
 loginLink.onclick = function(e) {
     e.preventDefault();
     login();
