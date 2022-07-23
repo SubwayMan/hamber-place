@@ -2,6 +2,10 @@
 
 A replica of r/place for educational use.
 
+### Backstory
+
+This project was whipped up in the latter half of April 2022 for Eric Hamber Secondary's programming club. The idea of the activity was to create bots that drew on the canvas - this was done through copying cURL requests in the browser and converting them to Python calls.
+
 ### Disclaimer
 
 This project is at an Alpha level of readiness. The code is not sufficiently organized and the setup instructions provided in this README may be outdated.
