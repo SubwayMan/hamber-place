@@ -8,7 +8,7 @@ This project was whipped up in the latter half of April 2022 for Eric Hamber Sec
 
 ### Preview
 
-[Image1](./showcase/hamberplace.png)
+![Image1](./showcase/hamberplace.png)
 
 ### Disclaimer
 
